@@ -44,7 +44,7 @@ if uploaded_files:
         img = Image.open(uploaded_file)
         processed_img = process_image(img, (target_size, target_size), blur_radius)
         
-        st.image(processed_img, caption=f'Processed {uploaded_file.name}', use_column_width=True)
+        st.image(processed_img, caption=f'Processed {uploaded_file.name}', width=700)
         
         img_byte_arr = io.BytesIO()
         processed_img.save(img_byte_arr, format='PNG')
