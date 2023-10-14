@@ -1,7 +1,7 @@
 ---
-title: Github-Actions-DEMO
-emoji: 🌟
-colorFrom: green
+title: SquareMotion
+emoji: 📊
+colorFrom: purple
 colorTo: red
 sdk: streamlit
 sdk_version: 1.27.1
