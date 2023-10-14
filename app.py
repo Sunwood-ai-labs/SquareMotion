@@ -20,7 +20,7 @@ def process_image(img, target_size, blur_radius):
     return img_cropped
 
 
-st.title('SquareStretch v1.1')
+st.title('SquareMotion v1.0')
 
 st.write("""
 ## アプリの概要
