@@ -18,7 +18,7 @@ import seaborn as sns
 
 def app_description():
     """Display the description of the app."""
-    st.title('SquareMotion v2.0.1')
+    st.title('SquareMotion v2.1.0')
     st.markdown("""
     ### アプリの概要
 
