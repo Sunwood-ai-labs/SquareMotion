@@ -17,7 +17,7 @@ def concatenate_videos(video_files):
     concatenated_clip = concatenate_videoclips(clips, method="compose")
     
     # 一時ファイル名を定義
-    temp_file_name = "temp_concatenated_video.mp4"
+    temp_file_name = "/temp_concatenated_video.mp4"
     concatenated_clip.write_videofile(temp_file_name, codec="libx264")  # 一時ファイルに書き込む
     
     # 一時ファイルを読み込んでバイトとして返す
