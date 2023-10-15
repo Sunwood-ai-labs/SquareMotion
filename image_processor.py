@@ -7,6 +7,29 @@ from PIL import Image, ImageFilter
 from moviepy.editor import concatenate_videoclips, VideoFileClip
 import os
 
+import os
+import stat
+
+def list_files_with_permissions(directory='.'):
+    files = os.listdir(directory)
+    permissions = []
+
+    for file in files:
+        file_stat = os.stat(os.path.join(directory, file))
+        file_mode = file_stat.st_mode
+
+        # ファイルモードを権限の文字列に変換
+        perm_str = ''
+        for who in 'USR', 'GRP', 'OTH':
+            for perm in 'R', 'W', 'X':
+                if file_mode & getattr(stat, f'S_I{perm}_{who}'):
+                    perm_str += perm.lower()
+                else:
+                    perm_str += '-'
+        permissions.append(perm_str)
+
+    return list(zip(files, permissions))
+
 def concatenate_videos(video_files):
     """
     与えられた動画ファイルのリストを結合して1つの動画を作成します。
@@ -78,7 +101,10 @@ def create_video_from_image(image, duration, uploaded_name):
     
     ls_file_name = os.listdir("/")
     print(f"/ files is {ls_file_name}")
-    
+    # 使用例
+    for file, perm in list_files_with_permissions():
+        print(f"{file}: {perm}")
+        
     with open(mov_name, 'rb') as video_file:
         video_bytes = video_file.read()
     
