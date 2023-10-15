@@ -7,6 +7,14 @@ import random
 import pandas as pd
 import os
 from image_processor import process_image, create_video_from_image, concatenate_videos, list_files_with_permissions  # 画像処理関数を別ファイルからインポート
+from moviepy.editor import *
+import tempfile
+
+import numpy as np
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 def app_description():
     """Display the description of the app."""
@@ -100,10 +108,68 @@ def display_processed_videos(processed_images, uploaded_file_names, min_duration
 
     return video_files
         
+def extract_audio_from_file(uploaded_file):
+    """アップロードされたファイルから音楽を抽出する関数"""
+    if not uploaded_file:
+        return None, None
+
+    # 一時ファイルとして保存。拡張子は.wavとする。
+    tfile = tempfile.NamedTemporaryFile(delete=False, prefix="audio_extract_", suffix=".wav")
+    tfile.write(uploaded_file.getvalue())
+    
+    audio = None
+    if uploaded_file.type == 'video/mp4':
+        music_clip = VideoFileClip(tfile.name)
+        audio = music_clip.audio
+    else:  # 'audio/wav' or 'audio/mpeg' (for MP3)
+        audio = AudioFileClip(tfile.name)
+
+    return audio, tfile.name
+
+def save_uploaded_file(uploaded_file):
+    """
+    StreamlitのUploadedFileを一時ファイルとして保存し、そのファイルパスを返します。
+    """
+    tfile = tempfile.NamedTemporaryFile(delete=False) 
+    tfile.write(uploaded_file.read())
+    
+    return tfile.name
+
+def visualize_audio_waveform(uploaded_file):
+    # 一時ファイルとして保存
+    temp_path = save_uploaded_file(uploaded_file)
+
+    # オリジナルのサンプリングレートで音楽ファイルをロード
+    y_original, sr_original = librosa.load(temp_path, sr=None)
+
+    # 100分の1のサンプリングレートでロード
+    y_resampled, sr_resampled = librosa.load(temp_path, sr=sr_original // 1000)
+
+    # 時刻tを生成
+    t = [i/sr_resampled for i in range(len(y_resampled))]
+
+    # pandasのデータフレームを作成
+    chart_data = pd.DataFrame({
+        'Time': t,
+        'Waveform': y_resampled
+    })
+
+    # Streamlitのline_chart関数で波形を表示
+    st.line_chart(chart_data, x='Time', y='Waveform')
+
+    # 一時ファイルの削除
+    # os.remove(temp_path)
 
 def main():
     app_description()
     
+    # 音楽として使用するファイルをアップロード
+    uploaded_music_file = st.file_uploader('音楽として使用するファイル（MP4/WAV/MP3）をアップロードしてください', type=['mp4', 'wav', 'mp3'])
+
+    # 音楽を抽出
+    audio, audio_path = extract_audio_from_file(uploaded_music_file)
+    # audio_path = save_uploaded_file(uploaded_music_file)
+
     uploaded_files = st.file_uploader('画像をアップロードしてください', type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
     target_size = st.slider('リサイズ後のサイズ', min_value=100, max_value=3000, value=2000)
@@ -113,44 +179,43 @@ def main():
     min_duration = st.slider('動画時間の最小値', min_value=1, max_value=7, value=1)
     max_duration = st.slider('動画時間の最大値', min_value=1, max_value=7, value=3)
 
+    st.markdown("### Music visualize")
+    if uploaded_music_file:
+        visualize_audio_waveform(uploaded_music_file)
+
     st.markdown("### Vertical transformation")
     processed_images, uploaded_file_names = display_processed_images(uploaded_files, target_size, blur_radius, aspect_ratio_w, aspect_ratio_h)
 
-    ls_file_name = os.listdir()
-    st.markdown(f"files is {ls_file_name}")
-    print(f"files is {ls_file_name}")
-    ls_file_name = os.listdir("/")
-    st.markdown(f"files is {ls_file_name}")
     
-    for file, perm in list_files_with_permissions("/"):
-        print(f"{file}: {perm}")
-
     st.markdown("### Motion transformation")
     video_files = display_processed_videos(processed_images, uploaded_file_names, min_duration,  max_duration)
 
     st.markdown("### Combined video")    
 
 
-    # video_filesをpandas DataFrameに変換
-    df_video_files = pd.DataFrame(video_files, columns=["Video Files"])
-
-    # Streamlitにテーブルとして表示
-    st.table(df_video_files)
-
     # 動画を結合
-    combined_video = concatenate_videos(video_files)
+    if(video_files):
 
-    # Streamlitで表示
-    st.video(combined_video, format="video/mp4")
+        # video_filesをpandas DataFrameに変換
+        df_video_files = pd.DataFrame(video_files, columns=["Video Files"])
 
-    # ダウンロードボタン
-    st.download_button(
-        label="結合された動画をダウンロード",
-        data=combined_video,
-        file_name="combined_video.mp4",
-        mime="video/mp4"
-    )
+        # Streamlitにテーブルとして表示
+        st.table(df_video_files)
+        
+        combined_video = concatenate_videos(video_files, audio_path, audio=audio)
+
+        # Streamlitで表示
+        st.video(combined_video, format="video/mp4")
+
+        # ダウンロードボタン
+        st.download_button(
+            label="結合された動画をダウンロード",
+            data=combined_video,
+            file_name="combined_video.mp4",
+            mime="video/mp4"
+        )
 
 
 if __name__ == "__main__":
     main()
+    # streamlit run app.py
