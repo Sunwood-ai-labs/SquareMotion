@@ -18,7 +18,7 @@ import seaborn as sns
 
 def app_description():
     """Display the description of the app."""
-    st.title('SquareMotion v1.2.6')
+    st.title('SquareMotion v2.0.1')
     st.markdown("""
     ### アプリの概要
 
@@ -163,12 +163,26 @@ def visualize_audio_waveform(uploaded_file):
 def main():
     app_description()
     
+    # assets\audioフォルダ内のwavファイルをリストアップ
+    audio_files = [f for f in os.listdir('assets/audio') if f.endswith('.wav')]
+    audio_files.append("アップロードした音声ファイルを使用する")
+
     # 音楽として使用するファイルをアップロード
     uploaded_music_file = st.file_uploader('音楽として使用するファイル（MP4/WAV/MP3）をアップロードしてください', type=['mp4', 'wav', 'mp3'])
 
-    # 音楽を抽出
-    audio, audio_path = extract_audio_from_file(uploaded_music_file)
-    # audio_path = save_uploaded_file(uploaded_music_file)
+    # Streamlitのselectboxでwavファイルまたはアップロードされたファイルを選択
+    selected_audio_file = st.selectbox("音楽として使用するwavファイルを選択してください", audio_files)
+
+    if selected_audio_file == "アップロードした音声ファイルを使用する":
+        if uploaded_music_file:
+            # 音楽を抽出
+            audio, audio_path = extract_audio_from_file(uploaded_music_file)
+        else:
+            st.warning("音声ファイルをアップロードしてください")
+            audio, audio_path = None, None
+    else:
+        audio_path = os.path.join('assets/audio', selected_audio_file)
+        audio = AudioFileClip(audio_path)
 
     uploaded_files = st.file_uploader('画像をアップロードしてください', type=['png', 'jpg', 'jpeg'], accept_multiple_files=True)
 
