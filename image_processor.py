@@ -40,7 +40,7 @@ def concatenate_videos(video_files):
     concatenated_clip = concatenate_videoclips(clips, method="compose")
     
     # 一時ファイル名を定義
-    temp_file_name = "/temp_concatenated_video.mp4"
+    temp_file_name = "temp_concatenated_video.mp4"
     concatenated_clip.write_videofile(temp_file_name, codec="libx264")  # 一時ファイルに書き込む
     
     # 一時ファイルを読み込んでバイトとして返す
@@ -94,7 +94,7 @@ def create_video_from_image(image, duration, uploaded_name):
 
     
 
-    mov_name = f'/tmp/{uploaded_name}.mp4'
+    mov_name = f'{uploaded_name}.mp4'
     print(f"mov_name is {mov_name}")
     out = cv2.VideoWriter(mov_name, fourcc, fps, size)
     
@@ -102,10 +102,10 @@ def create_video_from_image(image, duration, uploaded_name):
         out.write(img_bgr)
     out.release()
     
-    ls_file_name = os.listdir("/tmp")
-    print(f"/tmp files is {ls_file_name}")
+    ls_file_name = os.listdir(".")
+    print(f"./ files is {ls_file_name}")
     # 使用例
-    for file, perm in list_files_with_permissions():
+    for file, perm in list_files_with_permissions("."):
         print(f"{file}: {perm}")
         
     with open(mov_name, 'rb') as video_file:
