@@ -5,7 +5,7 @@ import io
 import zipfile
 import random
 import pandas as pd
-
+import os
 from image_processor import process_image, create_video_from_image, concatenate_videos  # 画像処理関数を別ファイルからインポート
 
 def app_description():
@@ -122,6 +122,9 @@ def main():
 
 
     st.markdown("### Combined video")
+    
+    ls_file_name = os.listdir()
+    st.markdown(f"files is {ls_file_name}")
 
     # video_filesをpandas DataFrameに変換
     df_video_files = pd.DataFrame(video_files, columns=["Video Files"])
