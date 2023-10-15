@@ -118,7 +118,7 @@ def main():
 
     ls_file_name = os.listdir()
     st.markdown(f"files is {ls_file_name}")
-
+    print(f"files is {ls_file_name}")
     ls_file_name = os.listdir("/")
     st.markdown(f"files is {ls_file_name}")
 
