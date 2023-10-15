@@ -10,7 +10,7 @@ import os
 import os
 import stat
 
-def list_files_with_permissions(directory='/'):
+def list_files_with_permissions(directory='.'):
     files = os.listdir(directory)
     permissions = []
 
@@ -18,7 +18,15 @@ def list_files_with_permissions(directory='/'):
         file_stat = os.stat(os.path.join(directory, file))
         file_mode = file_stat.st_mode
 
-        permissions.append(file_mode)
+        # ファイルモードを権限の文字列に変換
+        perm_str = ''
+        for who, who_code in [('USR', 'USR'), ('GRP', 'GRP'), ('OTH', 'OTH')]:
+            for perm, perm_code in [('R', 'R'), ('W', 'W'), ('X', 'X')]:
+                if file_mode & getattr(stat, f'S_I{perm_code}{who_code}'):
+                    perm_str += perm.lower()
+                else:
+                    perm_str += '-'
+        permissions.append(perm_str)
 
     return list(zip(files, permissions))
 
