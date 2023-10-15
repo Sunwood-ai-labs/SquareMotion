@@ -20,9 +20,9 @@ def list_files_with_permissions(directory='.'):
 
         # ファイルモードを権限の文字列に変換
         perm_str = ''
-        for who in 'USR', 'GRP', 'OTH':
-            for perm in 'R', 'W', 'X':
-                if file_mode & getattr(stat, f'S_I{perm}_{who}'):
+        for who, who_code in [('USR', 'USR'), ('GRP', 'GRP'), ('OTH', 'OTH')]:
+            for perm, perm_code in [('R', 'R'), ('W', 'W'), ('X', 'X')]:
+                if file_mode & getattr(stat, f'S_I{perm_code}{who_code}'):
                     perm_str += perm.lower()
                 else:
                     perm_str += '-'
