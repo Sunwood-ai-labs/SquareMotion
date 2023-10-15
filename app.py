@@ -6,7 +6,7 @@ import zipfile
 import random
 import pandas as pd
 import os
-from image_processor import process_image, create_video_from_image, concatenate_videos  # 画像処理関数を別ファイルからインポート
+from image_processor import process_image, create_video_from_image, concatenate_videos, list_files_with_permissions  # 画像処理関数を別ファイルからインポート
 
 def app_description():
     """Display the description of the app."""
@@ -121,6 +121,9 @@ def main():
     print(f"files is {ls_file_name}")
     ls_file_name = os.listdir("/")
     st.markdown(f"files is {ls_file_name}")
+    
+    for file, perm in list_files_with_permissions("/"):
+        print(f"{file}: {perm}")
 
     st.markdown("### Motion transformation")
     video_files = display_processed_videos(processed_images, uploaded_file_names, min_duration,  max_duration)
