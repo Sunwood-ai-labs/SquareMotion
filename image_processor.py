@@ -91,7 +91,7 @@ def create_video_from_image(image, duration, uploaded_name):
     # fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # .mp4フォーマットのために'mp4v'を使用
     fourcc = cv2.VideoWriter_fourcc(*'H264')  # .mp4フォーマットのために'mp4v'を使用
 
-    mov_name = f'/{uploaded_name}.mp4'
+    mov_name = f'/tmp/{uploaded_name}.mp4'
     
     out = cv2.VideoWriter(mov_name, fourcc, fps, size)
     
@@ -99,8 +99,8 @@ def create_video_from_image(image, duration, uploaded_name):
         out.write(img_bgr)
     out.release()
     
-    ls_file_name = os.listdir("/")
-    print(f"/ files is {ls_file_name}")
+    ls_file_name = os.listdir("/tmp")
+    print(f"/tmp files is {ls_file_name}")
     # 使用例
     for file, perm in list_files_with_permissions():
         print(f"{file}: {perm}")
