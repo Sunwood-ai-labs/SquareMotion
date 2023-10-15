@@ -170,8 +170,11 @@ def main():
     # 音楽として使用するファイルをアップロード
     uploaded_music_file = st.file_uploader('音楽として使用するファイル（MP4/WAV/MP3）をアップロードしてください', type=['mp4', 'wav', 'mp3'])
 
+    # ランダムにデフォルトの音声ファイルを選ぶ
+    default_audio_file = random.choice(audio_files)
+
     # Streamlitのselectboxでwavファイルまたはアップロードされたファイルを選択
-    selected_audio_file = st.selectbox("音楽として使用するwavファイルを選択してください", audio_files)
+    selected_audio_file = st.selectbox("音楽として使用するwavファイルを選択してください", audio_files, index=audio_files.index(default_audio_file))
 
     if selected_audio_file == "アップロードした音声ファイルを使用する":
         if uploaded_music_file:
