@@ -107,7 +107,8 @@ def create_video_from_image(image, duration, uploaded_name):
     img_np = np.array(image)
 
     # RGBをBGRに変換 (OpenCVはBGRフォーマットを使用します)
-    img_rgb = cv2.cvtColor(img_np, cv2.COLOR_BGR2RGB)
+    # img_rgb = cv2.cvtColor(img_np, cv2.COLOR_BGR2RGB)
+    img_rgb = img_np
     
     # NumPy配列からmoviepyのVideoClipを作成
     clip = ImageSequenceClip([img_rgb], durations=[duration])
