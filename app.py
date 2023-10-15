@@ -116,15 +116,17 @@ def main():
     st.markdown("### Vertical transformation")
     processed_images, uploaded_file_names = display_processed_images(uploaded_files, target_size, blur_radius, aspect_ratio_w, aspect_ratio_h)
 
+    ls_file_name = os.listdir()
+    st.markdown(f"files is {ls_file_name}")
+
+    ls_file_name = os.listdir("/")
+    st.markdown(f"files is {ls_file_name}")
+
     st.markdown("### Motion transformation")
     video_files = display_processed_videos(processed_images, uploaded_file_names, min_duration,  max_duration)
 
+    st.markdown("### Combined video")    
 
-
-    st.markdown("### Combined video")
-    
-    ls_file_name = os.listdir()
-    st.markdown(f"files is {ls_file_name}")
 
     # video_filesをpandas DataFrameに変換
     df_video_files = pd.DataFrame(video_files, columns=["Video Files"])
