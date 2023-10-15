@@ -45,4 +45,4 @@ jobs:
 
 ## token
 
-![token](image/token.png)
+![token](assets/image/token.png)
