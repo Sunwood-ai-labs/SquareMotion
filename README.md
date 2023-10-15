@@ -1,6 +1,6 @@
 ---
 title: SquareMotion
-emoji: 📊
+emoji: 🎥
 colorFrom: purple
 colorTo: red
 sdk: streamlit
@@ -11,7 +11,7 @@ license: mit
 ---
 
 
-# Github-Actions-DEMO
+# SquareMotion
 
 ## run.yaml
 
