@@ -5,6 +5,8 @@ import numpy as np
 from PIL import Image, ImageFilter
 
 from moviepy.editor import concatenate_videoclips, VideoFileClip
+from moviepy.editor import *
+
 import os
 
 import os
@@ -73,45 +75,32 @@ def process_image(img, target_size, blur_radius, aspect_ratio_w, aspect_ratio_h)
     return img_cropped
 
 def create_video_from_image(image, duration, uploaded_name):
-    """
-    与えられたPIL画像と指定した期間（秒）を使用して動画を作成します。
-    動画をバイトとして返します。
-    """
+    # ビデオの名前を設定
+    mov_name = f'{uploaded_name}.mp4'
+    
     # PIL画像をNumPy配列に変換
     img_np = np.array(image)
-    
-    # RGBをBGRに変換 (OpenCVはBGRフォーマットを使用します)
-    img_bgr = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
-    
-    height, width, layers = img_bgr.shape
-    size = (width, height)
-    
-    # 動画の設定
-    fps = 30
-    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # .mp4フォーマットのために'mp4v'を使用
-    # fourcc = cv2.VideoWriter_fourcc(*'H264')  # .mp4フォーマットのために'mp4v'を使用
-    # fourcc = cv2.VideoWriter_fourcc(*'MJPG')  # .mp4フォーマットのために'mp4v'を使用
-    fourcc = cv2.VideoWriter_fourcc(*'X264')  # .mp4フォーマットのために'mp4v'を使用
-    
 
-    mov_name = f'{uploaded_name}.mp4'
-    print(f"mov_name is {mov_name}")
-    out = cv2.VideoWriter(mov_name, fourcc, fps, size)
+    # RGBをBGRに変換 (OpenCVはBGRフォーマットを使用します)
+    img_rgb = cv2.cvtColor(img_np, cv2.COLOR_BGR2RGB)
     
-    for _ in range(int(fps * duration)):
-        out.write(img_bgr)
-    out.release()
-    
+    # NumPy配列からmoviepyのVideoClipを作成
+    clip = ImageSequenceClip([img_rgb], durations=[duration])
+
+    # 動画をファイルとして保存
+    clip.write_videofile(mov_name, fps=30, codec='libx264')
+
     ls_file_name = os.listdir(".")
     print(f"./ files is {ls_file_name}")
+
     # 使用例
     for file, perm in list_files_with_permissions("."):
         print(f"{file}: {perm}")
-        
+
     with open(mov_name, 'rb') as video_file:
         video_bytes = video_file.read()
-    
-    return video_bytes, mov_name
+
+    return video_bytes, mov_name    
 
 if __name__ == "__main__":
     video_files = ['IMG_2791.JPG.mp4']
