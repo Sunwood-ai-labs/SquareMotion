@@ -88,10 +88,10 @@ def create_video_from_image(image, duration, uploaded_name):
     
     # 動画の設定
     fps = 30
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # .mp4フォーマットのために'mp4v'を使用
+    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # .mp4フォーマットのために'mp4v'を使用
     # fourcc = cv2.VideoWriter_fourcc(*'H264')  # .mp4フォーマットのために'mp4v'を使用
     # fourcc = cv2.VideoWriter_fourcc(*'MJPG')  # .mp4フォーマットのために'mp4v'を使用
-
+    fourcc = cv2.VideoWriter_fourcc(*'X264')  # .mp4フォーマットのために'mp4v'を使用
     
 
     mov_name = f'{uploaded_name}.mp4'
