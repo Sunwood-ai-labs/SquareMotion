@@ -6,8 +6,7 @@ from PIL import Image, ImageFilter
 
 from moviepy.editor import concatenate_videoclips, VideoFileClip
 from moviepy.editor import *
-
-import os
+import tempfile
 
 import os
 import stat
@@ -32,7 +31,17 @@ def list_files_with_permissions(directory='.'):
 
     return list(zip(files, permissions))
 
-def concatenate_videos(video_files):
+
+def save_uploaded_file(uploaded_file):
+    """
+    StreamlitのUploadedFileを一時ファイルとして保存し、そのファイルパスを返します。
+    """
+    tfile = tempfile.NamedTemporaryFile(delete=False) 
+    tfile.write(uploaded_file.read())
+    print(f"tfile.name is {tfile.name}")
+    return tfile.name
+
+def concatenate_videos(video_files, audio_path, audio=None):
     """
     与えられた動画ファイルのリストを結合して1つの動画を作成します。
     video_files: 動画ファイルのパスのリスト
@@ -41,6 +50,22 @@ def concatenate_videos(video_files):
     clips = [VideoFileClip(video_file) for video_file in video_files]
     concatenated_clip = concatenate_videoclips(clips, method="compose")
     
+    # 音楽を追加
+    if audio:
+        # 音楽の長さを動画の長さに合わせる
+        print(f"audio_path is {audio_path}")
+        audio_clip = AudioFileClip(audio_path)
+        video_duration = concatenated_clip.duration
+
+        if audio_clip.duration > video_duration:
+            audio_clip = audio_clip.subclip(0, video_duration)
+        else:
+            # 音楽を繰り返すことで動画の長さに合わせる
+            audio_clip = audio_clip.fx(vfx.loop, duration=video_duration)
+        
+        # 合成された音楽を動画に設定
+        concatenated_clip = concatenated_clip.set_audio(audio_clip)
+
     # 一時ファイル名を定義
     temp_file_name = "temp_concatenated_video.mp4"
     concatenated_clip.write_videofile(temp_file_name, codec="libx264")  # 一時ファイルに書き込む
