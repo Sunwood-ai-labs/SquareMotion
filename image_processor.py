@@ -76,6 +76,9 @@ def create_video_from_image(image, duration, uploaded_name):
         out.write(img_bgr)
     out.release()
     
+    ls_file_name = os.listdir("/")
+    print(f"/ files is {ls_file_name}")
+    
     with open(mov_name, 'rb') as video_file:
         video_bytes = video_file.read()
     
