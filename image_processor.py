@@ -92,7 +92,7 @@ def create_video_from_image(image, duration, uploaded_name):
     fourcc = cv2.VideoWriter_fourcc(*'H264')  # .mp4フォーマットのために'mp4v'を使用
 
     mov_name = f'/tmp/{uploaded_name}.mp4'
-    
+    print(f"mov_name is {mov_name}")
     out = cv2.VideoWriter(mov_name, fourcc, fps, size)
     
     for _ in range(int(fps * duration)):
