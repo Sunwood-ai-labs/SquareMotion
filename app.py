@@ -10,7 +10,7 @@ from image_processor import process_image, create_video_from_image, concatenate_
 
 def app_description():
     """Display the description of the app."""
-    st.title('SquareMotion v1.2')
+    st.title('SquareMotion v1.2.1')
     st.markdown("""
     ### アプリの概要
 
